@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+{% block title %}Vault — Passkey{% endblock %}
+
+{% block head %}
+<style>
+  .search-bar { display: flex; gap: 0.5rem; margin-bottom: 1.25rem; }
+  .search-bar input { flex: 1; }
+
+  .entry-list { display: flex; flex-direction: column; gap: 0.5rem; }
+
+  .entry-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 0.85rem 1rem;
+    text-decoration: none;
+    color: var(--text);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    transition: border-color 0.15s, background 0.15s;
+  }
+
+  .entry-card:hover {
+    border-color: var(--accent);
+    background: #1e2130;
+  }
+
+  .entry-info { font-weight: 600; font-size: 0.95rem; }
+  .entry-meta { font-size: 0.8rem; color: var(--muted); margin-top: 0.2rem; }
+
+  .entry-arrow { color: var(--muted); font-size: 1rem; }
+
+  .empty {
+    text-align: center;
+    padding: 3rem 1rem;
+    color: var(--muted);
+  }
+
+  .count-label {
+    font-size: 0.8rem;
+    color: var(--muted);
+    margin-bottom: 0.75rem;
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="page-title">Vault</div>
+
+<form method="get" class="search-bar">
+  <input type="search" name="q" value="{{ q }}" placeholder="Search by site or user…" autofocus>
+  <button type="submit" class="btn btn-primary">Search</button>
+  {% if q %}<a href="{{ url_for('index') }}" class="btn btn-ghost">Clear</a>{% endif %}
+</form>
+
+{% if entries %}
+  <div class="count-label">{{ entries | length }} entr{{ 'y' if entries | length == 1 else 'ies' }}{% if q %} matching "{{ q }}"{% endif %}</div>
+  <div class="entry-list">
+    {% for e in entries %}
+    <a class="entry-card" href="{{ url_for('detail', sha_key=e.key) }}">
+      <div>
+        <div class="entry-info">{{ e.info }}</div>
+        <div class="entry-meta">{{ e.user }}  ·  {{ e.acc }}</div>
+      </div>
+      <span class="entry-arrow">›</span>
+    </a>
+    {% endfor %}
+  </div>
+{% else %}
+  <div class="empty">
+    {% if q %}No entries matching "{{ q }}"{% else %}No entries yet. <a href="{{ url_for('add') }}" style="color:var(--accent)">Add one →</a>{% endif %}
+  </div>
+{% endif %}
+{% endblock %}

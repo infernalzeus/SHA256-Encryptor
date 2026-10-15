@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+{% block title %}Add Entry — Passkey{% endblock %}
+
+{% block head %}
+<style>
+  .back-link {
+    display: inline-block;
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 0.85rem;
+    margin-bottom: 1.1rem;
+  }
+  .back-link:hover { color: var(--text); }
+
+  .toggle-btn {
+    background: none;
+    border: none;
+    color: var(--muted);
+    font-size: 0.8rem;
+    cursor: pointer;
+    padding: 0;
+    margin-top: 0.3rem;
+  }
+  .toggle-btn:hover { color: var(--text); }
+
+  .form-actions { display: flex; gap: 0.65rem; margin-top: 1.5rem; flex-wrap: wrap; }
+</style>
+{% endblock %}
+
+{% block content %}
+<a class="back-link" href="{{ url_for('index') }}">← Back to vault</a>
+<div class="page-title">Add Entry</div>
+
+<form method="post" autocomplete="off">
+  <div class="form-group">
+    <label for="info">Site / Service</label>
+    <input type="text" id="info" name="info" value="{{ form.get('info','') }}"
+           placeholder="e.g. Gmail, Netflix, GitHub" autofocus>
+  </div>
+
+  <div class="form-group">
+    <label for="user">User / Email</label>
+    <input type="text" id="user" name="user" value="{{ form.get('user','') }}"
+           placeholder="username or email">
+  </div>
+
+  <div class="form-group">
+    <label for="acc">Account #</label>
+    <input type="text" id="acc" name="acc" value="{{ form.get('acc','') }}"
+           placeholder="account number, phone, or ID">
+  </div>
+
+  <div class="form-group">
+    <label for="password">Password</label>
+    <input type="password" id="password" name="password" placeholder="Enter password">
+    <button type="button" class="toggle-btn" onclick="togglePw()">Show / Hide</button>
+  </div>
+
+  <div class="form-actions">
+    <button type="submit" class="btn btn-primary">Save Entry</button>
+    <a href="{{ url_for('index') }}" class="btn btn-ghost">Cancel</a>
+  </div>
+</form>
+
+<script>
+function togglePw() {
+  const el = document.getElementById('password');
+  el.type = el.type === 'password' ? 'text' : 'password';
+}
+</script>
+{% endblock %}

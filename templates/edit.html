@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+{% block title %}Edit {{ entry.info }} — Passkey{% endblock %}
+
+{% block head %}
+<style>
+  .back-link {
+    display: inline-block;
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 0.85rem;
+    margin-bottom: 1.1rem;
+  }
+  .back-link:hover { color: var(--text); }
+
+  .hint {
+    font-size: 0.78rem;
+    color: var(--muted);
+    margin-top: 0.3rem;
+  }
+
+  .toggle-btn {
+    background: none;
+    border: none;
+    color: var(--muted);
+    font-size: 0.8rem;
+    cursor: pointer;
+    padding: 0;
+    margin-top: 0.3rem;
+  }
+  .toggle-btn:hover { color: var(--text); }
+
+  .form-actions { display: flex; gap: 0.65rem; margin-top: 1.5rem; flex-wrap: wrap; }
+</style>
+{% endblock %}
+
+{% block content %}
+<a class="back-link" href="{{ url_for('detail', sha_key=sha_key) }}">← Back</a>
+<div class="page-title">Edit — {{ entry.info }}</div>
+
+<form method="post" autocomplete="off">
+  <div class="form-group">
+    <label for="info">Site / Service</label>
+    <input type="text" id="info" name="info" value="{{ entry.info }}" autofocus>
+  </div>
+
+  <div class="form-group">
+    <label for="user">User / Email</label>
+    <input type="text" id="user" name="user" value="{{ entry.user }}">
+  </div>
+
+  <div class="form-group">
+    <label for="acc">Account #</label>
+    <input type="text" id="acc" name="acc" value="{{ entry.acc }}">
+  </div>
+
+  <div class="form-group">
+    <label for="password">New Password</label>
+    <input type="password" id="password" name="password" placeholder="Leave blank to keep current">
+    <button type="button" class="toggle-btn" onclick="togglePw()">Show / Hide</button>
+    <div class="hint">Leave blank to keep the existing password unchanged.</div>
+  </div>
+
+  <div class="form-actions">
+    <button type="submit" class="btn btn-primary">Save Changes</button>
+    <a href="{{ url_for('detail', sha_key=sha_key) }}" class="btn btn-ghost">Cancel</a>
+  </div>
+</form>
+
+<script>
+function togglePw() {
+  const el = document.getElementById('password');
+  el.type = el.type === 'password' ? 'text' : 'password';
+}
+</script>
+{% endblock %}

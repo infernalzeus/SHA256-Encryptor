@@ -1,0 +1,125 @@
+{% extends "base.html" %}
+{% block title %}{{ entry.info }} — Passkey{% endblock %}
+
+{% block head %}
+<style>
+  .back-link {
+    display: inline-block;
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 0.85rem;
+    margin-bottom: 1.1rem;
+  }
+  .back-link:hover { color: var(--text); }
+
+  .entry-title {
+    font-size: 1.4rem;
+    font-weight: 700;
+    margin-bottom: 1.25rem;
+  }
+
+  .field-block { margin-bottom: 0.85rem; }
+
+  .field-label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    margin-bottom: 0.3rem;
+  }
+
+  .field-value {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 7px;
+    padding: 0.6rem 0.9rem;
+    font-size: 0.95rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+    word-break: break-all;
+  }
+
+  .copy-btn {
+    background: none;
+    border: none;
+    color: var(--muted);
+    cursor: pointer;
+    font-size: 0.85rem;
+    padding: 0.2rem 0.5rem;
+    border-radius: 5px;
+    flex-shrink: 0;
+    transition: background 0.15s, color 0.15s;
+  }
+  .copy-btn:hover { background: var(--border); color: var(--text); }
+  .copy-btn.copied { color: var(--success); }
+
+  .password-wrap { position: relative; }
+  .password-text { font-family: monospace; letter-spacing: 0.05em; }
+
+  .actions {
+    display: flex;
+    gap: 0.65rem;
+    margin-top: 1.5rem;
+    flex-wrap: wrap;
+  }
+
+  .delete-form { margin: 0; }
+</style>
+{% endblock %}
+
+{% block content %}
+<a class="back-link" href="{{ url_for('index') }}">← Back to vault</a>
+
+<div class="entry-title">{{ entry.info }}</div>
+
+<div class="field-block">
+  <div class="field-label">User / Email</div>
+  <div class="field-value">
+    <span>{{ entry.user }}</span>
+    <button class="copy-btn" onclick="copyText(this, '{{ entry.user }}')">Copy</button>
+  </div>
+</div>
+
+<div class="field-block">
+  <div class="field-label">Account #</div>
+  <div class="field-value">
+    <span>{{ entry.acc }}</span>
+    <button class="copy-btn" onclick="copyText(this, '{{ entry.acc }}')">Copy</button>
+  </div>
+</div>
+
+<div class="field-block">
+  <div class="field-label">Password</div>
+  <div class="field-value password-wrap">
+    {% if password %}
+      <span class="password-text" id="pw-text">{{ password }}</span>
+      <button class="copy-btn" onclick="copyText(this, '{{ password }}')">Copy</button>
+    {% else %}
+      <span class="muted">Not found</span>
+    {% endif %}
+  </div>
+</div>
+
+<div class="actions">
+  <a href="{{ url_for('edit', sha_key=entry.key) }}" class="btn btn-ghost">Edit</a>
+  <form class="delete-form" method="post"
+        action="{{ url_for('delete', sha_key=entry.key) }}"
+        onsubmit="return confirm('Delete this entry? This cannot be undone.')">
+    <button type="submit" class="btn btn-danger">Delete</button>
+  </form>
+</div>
+
+<script>
+function copyText(btn, text) {
+  navigator.clipboard.writeText(text).then(() => {
+    const orig = btn.textContent;
+    btn.textContent = 'Copied!';
+    btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = orig; btn.classList.remove('copied'); }, 1500);
+  });
+}
+</script>
+{% endblock %}
